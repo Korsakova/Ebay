@@ -1,0 +1,42 @@
+version: '3'
+services:
+  web-test:
+    container_name: web-test
+    image: "maven:3.6.0-jdk-8-slim"
+    network_mode: bridge
+    stdin_open: true
+    tty: true
+    volumes:
+      - ${PROJECT_DIR}:/usr/src/mymaven
+      - "./.m2:/root/.m2"
+#      - /home/root/.m2:/root/.m2
+    environment:
+      NG_DEV: jenkins
+      WEBDRIVER_BROWSER: ${WEBDRIVER_BROWSER}
+      BASE_AUTH_ENABLE: false
+      WEB_SCHEME: http://
+      BASE_AUTH_LOGIN:
+      BASE_AUTH_PASS:
+      SITE_URL: mail.ru
+      HOSTS:
+      MAVEN_TIMEOUT: 30000
+      SELENOID_URL: localhost:4444
+      FIREFOX_VERSION: 60.0
+      CHROME_VERSION: 66.0
+      SELENOID_ENABLE_VNC: false
+      SELENOID_ENABLE_VIDEO: false
+      SELENOID_SCREEN_WIDTH: 1920
+      SELENOID_SCREEN_HEIGHT: 1080
+    env_file:
+      - .projectEnv
+    working_dir: /usr/src/mymaven
+    command: bash entrypoint.sh
+
+  allure-report:
+    container_name: allure-report
+    image: "nginx"
+    user: "0:0"
+    volumes:
+     - "./target/site/allure-maven-plugin:/usr/share/nginx/html"
+    ports:
+     - "8082:80"

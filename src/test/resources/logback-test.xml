@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <timestamp key="byDay" datePattern="yyyyMMdd'T'HHmmss"/>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <File>target/logback/logback_output-${byDay}.log</File>
+        <encoder>
+            <pattern>
+[%highlight(%-5level)]%d{HH:mm:ss.SSS}:
+    [Class: %X{ClassName}] [Method: %X{MethodName}]:
+    %cyan(%logger{15}) - %msg%n%rEx
+            </pattern>
+            <immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+[%highlight(%-5level)] %d{HH:mm:ss.SSS}
+    [Class: %red(%X{ClassName})] [Method: %green(%X{MethodName})]<!--%green([Class:%C]) %red([Method: %M])-->
+    %yellow([Object: %cyan(%logger{15})])
+    %blue(Action: %msg%n%rEx)
+                <!--Callers:-->
+                <!--%caller-->
+            </pattern>
+            <immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="CSV" class="ch.qos.logback.core.FileAppender">
+        <File>target/logback/perfData-${byDay}.csv</File>
+        <Append>true</Append>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return message.contains("Execution_Time");</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS};%X{ClassName};%X{MethodName};%msg%n</pattern>
+            <immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+    <logger name="org.sb2b.qa.common" level="DEBUG"/>
+    <logger name="org.springframework" level="OFF"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CSV"/>
+    </root>
+</configuration>

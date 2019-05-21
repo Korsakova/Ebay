@@ -1,0 +1,17 @@
+#Main ignore files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# exe results (build, allure report in /target/site/allure-maven/
+target
+
+#allure dependencies (exe env for reporting)
+.allure/
+
+#dependencies for maven
+.m2
+
+#Video from selenoid
+/video
