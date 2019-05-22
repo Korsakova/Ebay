@@ -12,6 +12,3 @@ target
 
 #dependencies for maven
 .m2
-
-#Video from selenoid
-/video
